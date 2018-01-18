@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 """
-Utility to make HSV lerp gradients
+Utility to make HSV lerp gradients and build them from JSON config files
 """
 
 __author__ = 'Mike Lynch'
@@ -31,3 +31,19 @@ def hsvgrad(n, h1, s1, v1, h2, s2, v2):
     vl = lerpl(v1, v2, n - 1)
     return [ holidayrgb(hl(i), sl(i), vl(i)) for i in range(0, n) ]
     
+
+def json(json):
+    """Build a list of colours from a JSON structure"""
+    start = { 'h': 0, 's': 0, 'v': 0 }
+    grad = []
+    for gdef in json:
+        if gdef['start']:
+            start = gdef['start']
+        end = gdef['end']
+        grad += hsvgrad(
+            gdef['n'],
+            start['h'], start['s'], start['v'],
+            end['h'], start['s'], start['v']
+            )
+        start = end
+    return grad

@@ -6,21 +6,17 @@ from holidaysecretapi import HolidaySecretAPI
 
 class HolidaySpectrum:
 
-    def __init__(self, nfreq, addr, mode, decay):
+    def __init__(self, nfreq, addr, mode, gradients, decay):
         self.GRAD = nfreq
         self.DECAY = decay
         self.holiday = HolidaySecretAPI(addr=addr)
         self.levels = [ 0.0 ] * 50
         self.mode = mode
+        self.gradient = gradient.json(gradients[self.mode])
+    
         if self.mode == 'levels':
-            self.gradient = gradient.hsvgrad(16, .66, 1, 0, .66, 1, .5)
-            self.gradient += gradient.hsvgrad(17, .66, 1, 1, .33, 1, 1)
-            self.gradient += gradient.hsvgrad(17, .33, 1, 1, 0, 1, 1)
             self.f_col = self.f_col_levels
         else:
-            self.gradient = gradient.hsvgrad(16, 0, 1, 1, .33, 1, 1)
-            self.gradient += gradient.hsvgrad(17, .33, 1, 1, .66, 1, 1)
-            self.gradient += gradient.hsvgrad(17, .66, 1, 1, 1, 1, 1)
             self.f_col = self.f_col_spectrum
 
     def f_col_levels(self, i, level):
