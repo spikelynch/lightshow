@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys, argparse
+import sys, argparse, json
 from spectrum import SpectrumAnalyser
 from holiday import HolidaySpectrum
 from ascii import AsciiSpectrum

@@ -37,7 +37,7 @@ def json(json):
     start = { 'h': 0, 's': 0, 'v': 0 }
     grad = []
     for gdef in json:
-        if gdef['start']:
+        if 'start' in gdef:
             start = gdef['start']
         end = gdef['end']
         grad += hsvgrad(

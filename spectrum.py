@@ -23,10 +23,11 @@ class SpectrumAnalyser:
     spec_y = 0
     data = []
 
-    def __init__(self, device, nfreq=DEFAULT_NFREQ):
+    def __init__(self, device=None, nfreq=DEFAULT_NFREQ):
         self.pa = pyaudio.PyAudio()
+        self.device = device
         if not device:
-            device = self.DEVICE
+            self.device = self.DEVICE
         self.nfreq = nfreq
         self.stream = self.pa.open(
             input_device_index=device,
@@ -38,7 +39,7 @@ class SpectrumAnalyser:
             frames_per_buffer = self.CHUNK)
 
     def run(self, renderers):
-        print("Listening on device {}".format(self.DEVICE))
+        print("Listening on device {}".format(self.device))
         try:
             while True:
                 self.data = self.audioinput()
