@@ -54,3 +54,10 @@ the Raspbian packages python-pyaudio and python-numpy. I've put a
 setup.py in this repo with the dependencies, but haven't tested it
 yet.
 
+# To Do
+
+Right now it just takes input from one stereo channel. It should take
+both, and give you the option of taking the average or visualising
+both channels.
+
+Detect pauses between songs and switch in new gradients.
