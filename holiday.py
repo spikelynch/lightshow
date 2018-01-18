@@ -4,7 +4,7 @@ from holidaysecretapi import HolidaySecretAPI
 # a renderer needs to have a method 'render' which accepts a single
 # list of values as an argument
 
-class Holiday:
+class HolidaySpectrum:
 
     def __init__(self, addr, mode):
         self.GRAD = 50
