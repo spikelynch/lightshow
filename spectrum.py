@@ -11,8 +11,8 @@ import pyaudio
 
 class SpectrumAnalyser:
     FORMAT = pyaudio.paFloat32
-    DEVICE = 2
     CHANNELS = 1
+    DEVICE = 0
     RATE = 48000
     CHUNK = 2048 
     START = 0
@@ -36,17 +36,19 @@ class SpectrumAnalyser:
             output = False,
             frames_per_buffer = self.CHUNK)
 
-    def run(self, visualiser):
+    def run(self, renderers):
         print("Listening on device {}".format(self.DEVICE))
         try:
             while True:
                 self.data = self.audioinput()
                 self.fft()
-                visualiser.render(self.spec_y)
+                for r in renderers:
+                    r.render(self.spec_y)
         except KeyboardInterrupt:
-            self.pa.close()
+            self.stream.close()
+            self.pa.terminate()
 
-        print("End...")
+        print("Done.")
 
     def audioinput(self):
         ret = self.stream.read(self.CHUNK)

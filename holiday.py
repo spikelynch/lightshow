@@ -1,7 +1,7 @@
 import gradient
 from holidaysecretapi import HolidaySecretAPI
 
-# a Renderer needs to have a method 'render' which accepts a single
+# a renderer needs to have a method 'render' which accepts a single
 # list of values as an argument
 
 class Holiday:
