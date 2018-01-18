@@ -16,17 +16,18 @@ class SpectrumAnalyser:
     RATE = 48000
     CHUNK = 2048 
     START = 0
-    N = 50 
+    DEFAULT_NFREQ = 50 
     wave_x = 0
     wave_y = 0
     spec_x = 0
     spec_y = 0
     data = []
 
-    def __init__(self, device):
+    def __init__(self, device, nfreq=DEFAULT_NFREQ):
         self.pa = pyaudio.PyAudio()
         if not device:
             device = self.DEVICE
+        self.nfreq = nfreq
         self.stream = self.pa.open(
             input_device_index=device,
             format = self.FORMAT,
@@ -56,10 +57,10 @@ class SpectrumAnalyser:
         return ret
 
     def fft(self):
-        self.wave_x = range(self.START, self.START + self.N)
-        self.wave_y = self.data[self.START:self.START + self.N]
-        self.spec_x = np.fft.fftfreq(self.N, d = 1.0 / self.RATE)  
-        y = np.fft.fft(self.data[self.START:self.START + self.N])    
+        self.wave_x = range(self.START, self.START + self.nfreq)
+        self.wave_y = self.data[self.START:self.START + self.nfreq]
+        self.spec_x = np.fft.fftfreq(self.nfreq, d = 1.0 / self.RATE)  
+        y = np.fft.fft(self.data[self.START:self.START + self.nfreq])    
         self.spec_y = [np.sqrt(c.real ** 2 + c.imag ** 2) for c in y]
 
 

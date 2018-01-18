@@ -19,29 +19,30 @@ from ascii import AsciiSpectrum
 #
 # - config:
 
-
+NFREQ = 50
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-d", "--device", type=int, help="Audio input device")
+parser.add_argument("-i", "--input", type=int, help="Audio input device")
 parser.add_argument("-l", "--lights",  type=str, default=None, help="IP of Holiday lights")
 parser.add_argument("-m", "--mode", type=str, default="levels", help="Holiday render mode", choices=[ "levels", "spectrum" ])
+parser.add_argument("-d", "--decay", type=float, default=0, help="Decay rate")
 parser.add_argument("-a", "--ascii", action="store_true", default=False, help="Send ASCII spectrum visualisation to stdout")
                         
 args = parser.parse_args()
 
+spec = SpectrumAnalyser(args.input, NFREQ)
+
 renderers = []
 
 if args.lights:
-    renderers.append(HolidaySpectrum(args.lights, args.mode))
+    renderers.append(HolidaySpectrum(spec.nfreq, args.lights, args.mode, args.decay))
 if args.ascii:
-    renderers.append(AsciiSpectrum())
+    renderers.append(AsciiSpectrum(spec.nfreq))
 
 if not renderers:
     print("You need to select at least one of --lights / --ascii")
     sys.exit(-1)
     
-spec = SpectrumAnalyser(args.device)
-
 spec.run(renderers)
 

@@ -6,8 +6,9 @@ from holidaysecretapi import HolidaySecretAPI
 
 class HolidaySpectrum:
 
-    def __init__(self, addr, mode):
-        self.GRAD = 50
+    def __init__(self, nfreq, addr, mode, decay):
+        self.GRAD = nfreq
+        self.DECAY = decay
         self.holiday = HolidaySecretAPI(addr=addr)
         self.levels = [ 0.0 ] * 50
         self.mode = mode
