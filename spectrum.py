@@ -11,7 +11,7 @@ import pyaudio, math
 
 class SpectrumAnalyser:
     FORMAT = pyaudio.paFloat32
-    CHANNELS = 1
+    CHANNELS = 2
     DEVICE = 0
     RATE = 48000
     CHUNK = 2048 
@@ -61,8 +61,14 @@ class SpectrumAnalyser:
         return ret
 
     def fft(self):
-        y = np.fft.fft(self.data[self.START:self.START + self.nbins])    
-        self.spectrum = [ self.scale *  np.sqrt(c.real ** 2 + c.imag ** 2) for c in y ]
+        interleaved = self.data[self.START:self.START + self.nbins * 2]
+        stereo = np.reshape(interleaved, (self.nbins, 2))
+  
+        left = np.fft.fft(stereo[:,0])
+        right = np.fft.fft(stereo[:,1])    
+        lspec = [ np.sqrt(c.real ** 2 + c.imag ** 2) for c in right ]
+        rspec = [ np.sqrt(c.real ** 2 + c.imag ** 2) for c in left ]
+        self.spectrum = [ self.scale * 0.5 * (l + r) for (l, r) in zip(lspec, rspec) ] 
         # shift so 0 is in the middle and throw away high frequencies
         s0 = self.spectrum[:self.slice]
         s1 = self.spectrum[-self.slice:]
@@ -71,7 +77,6 @@ class SpectrumAnalyser:
         m = max(self.spectrum)
         if m > self.max:
             self.max = m
-            print("max {}".format(m))
 
 
 

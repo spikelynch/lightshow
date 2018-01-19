@@ -24,7 +24,7 @@ NFREQ = 50
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", type=int, help="Audio input device")
-parser.add_argument("-s", "--scale", type=float, default=3.0, help="Scale input")
+parser.add_argument("-s", "--scale", type=float, default=2.0, help="Scale input")
 parser.add_argument("-l", "--lights",  type=str, default=None, help="IP of Holiday lights")
 parser.add_argument('-g', '--gradients', type=str, default='gradients.json', help="Gradient definitions")
 parser.add_argument("-m", "--mode", type=str, default="levels", help="Holiday render mode", choices=[ "levels", "spectrum" ])
