@@ -13,7 +13,7 @@ This package includes two renderers:
 
 ## How to run it
 
-./lightshow.py -i INPUT -l LIGHTS -m MODE -d DECAY -a
+./lightshow.py -i INPUT -l LIGHTS -m MODE -d DECAY -s SCALE -a
 
 INPUT is the index number of the input channel. I use a USB audio
 adaptor on my Pi which shows up as index # 2, but it may not be the
@@ -36,6 +36,11 @@ value between 0 and 1: the larger, the slower and smoother. Values
 from 0.2 to 0.5 look good to me. If you leave it off, it's equivalent
 to DECAY = 0 (ie a light goes dark as soon as its level drops)
 
+SCALE is a scaling factor, because the code isn't smart enough yet to
+adjust itself to the input levels. Higher values of SCALE will tell it
+to expect louder input: set it to lower levels if you're playing some
+quiet stuff and can't see anything.
+
 The -a flag sends an ASCII-art visualisation of the spectrum to the
 command line: it's useful for debugging if you haven't got the lights
 working yet.
@@ -45,7 +50,6 @@ working yet.
 
 The dependencies are:
 
-* argparse
 * PyAudio
 * NumPy
 
@@ -56,13 +60,10 @@ yet.
 
 # To Do
 
-Right now it just takes input from one stereo channel. It should take
-both, and give you the option of taking the average or visualising
-both channels.
+More options for stereo
 
 Keep a rolling average and adjust the scaling to the level of the
 input signals
 
-Detect pauses between songs and switch in new gradients.
+Detect pauses between songs - could switch between gradients here
 
-Throw away some of the higher frequencies
