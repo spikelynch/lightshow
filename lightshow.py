@@ -20,7 +20,7 @@ from ascii import AsciiSpectrum
 # - config:
 
 NBINS = 100 
-NFREQ = 50
+NFREQ = 25 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", type=int, help="Audio input device")
