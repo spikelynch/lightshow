@@ -6,7 +6,7 @@
 
 
 import numpy as np
-import pyaudio
+import pyaudio, math
 
 
 class SpectrumAnalyser:
@@ -16,19 +16,22 @@ class SpectrumAnalyser:
     RATE = 48000
     CHUNK = 2048 
     START = 0
-    DEFAULT_NFREQ = 50 
-    wave_x = 0
-    wave_y = 0
-    spec_x = 0
-    spec_y = 0
+    DEFAULT_BINS = 100
+    DEFAULT_USE = 50
+    EXPECT_MAX = 3.0 
     data = []
+    spectrum = []
 
-    def __init__(self, device=None, nfreq=DEFAULT_NFREQ):
+    def __init__(self, device=None, scale=EXPECT_MAX, nbins=DEFAULT_BINS, nfreq=DEFAULT_USE):
         self.pa = pyaudio.PyAudio()
         self.device = device
         if not device:
             self.device = self.DEVICE
         self.nfreq = nfreq
+        self.slice = self.nfreq // 2
+        self.nbins = nbins
+        self.max = 0
+        self.scale = 1.0 / scale
         self.stream = self.pa.open(
             input_device_index=device,
             format = self.FORMAT,
@@ -45,7 +48,7 @@ class SpectrumAnalyser:
                 self.data = self.audioinput()
                 self.fft()
                 for r in renderers:
-                    r.render(self.spec_y)
+                    r.render(self.spectrum)
         except KeyboardInterrupt:
             self.stream.close()
             self.pa.terminate()
@@ -58,11 +61,17 @@ class SpectrumAnalyser:
         return ret
 
     def fft(self):
-        self.wave_x = range(self.START, self.START + self.nfreq)
-        self.wave_y = self.data[self.START:self.START + self.nfreq]
-        self.spec_x = np.fft.fftfreq(self.nfreq, d = 1.0 / self.RATE)  
-        y = np.fft.fft(self.data[self.START:self.START + self.nfreq])    
-        self.spec_y = [np.sqrt(c.real ** 2 + c.imag ** 2) for c in y]
+        y = np.fft.fft(self.data[self.START:self.START + self.nbins])    
+        self.spectrum = [ self.scale *  np.sqrt(c.real ** 2 + c.imag ** 2) for c in y ]
+        # shift so 0 is in the middle and throw away high frequencies
+        s0 = self.spectrum[:self.slice]
+        s1 = self.spectrum[-self.slice:]
+        # s1.reverse()
+	self.spectrum = s1 + s0
+        m = max(self.spectrum)
+        if m > self.max:
+            self.max = m
+            print("max {}".format(m))
 
 
 
