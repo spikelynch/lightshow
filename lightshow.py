@@ -19,11 +19,12 @@ from ascii import AsciiSpectrum
 #
 # - config:
 
+NBINS = 100 
 NFREQ = 50
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", type=int, help="Audio input device")
+parser.add_argument("-s", "--scale", type=float, default=2.0, help="Scale input")
 parser.add_argument("-l", "--lights",  type=str, default=None, help="IP of Holiday lights")
 parser.add_argument('-g', '--gradients', type=str, default='gradients.json', help="Gradient definitions")
 parser.add_argument("-m", "--mode", type=str, default="levels", help="Holiday render mode", choices=[ "levels", "spectrum" ])
@@ -32,16 +33,16 @@ parser.add_argument("-a", "--ascii", action="store_true", default=False, help="S
                         
 args = parser.parse_args()
 
-spec = SpectrumAnalyser(args.input, NFREQ)
+spec = SpectrumAnalyser(args.input, args.scale, NBINS, NFREQ)
 
 renderers = []
 
 if args.lights:
     with open(args.gradients) as gf:
         gradients = json.load(gf)
-        renderers.append(HolidaySpectrum(spec.nfreq, args.lights, args.mode, gradients, args.decay))
+        renderers.append(HolidaySpectrum(args.lights, args.mode, gradients, args.decay))
 if args.ascii:
-    renderers.append(AsciiSpectrum(spec.nfreq))
+    renderers.append(AsciiSpectrum())
 
 if not renderers:
     print("You need to select at least one of --lights / --ascii")

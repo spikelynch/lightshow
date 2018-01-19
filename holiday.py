@@ -6,13 +6,13 @@ from holidaysecretapi import HolidaySecretAPI
 
 class HolidaySpectrum:
 
-    def __init__(self, nfreq, addr, mode, gradients, decay):
-        self.GRAD = nfreq
+    def __init__(self, addr, mode, gradients, decay):
         self.DECAY = decay
         self.holiday = HolidaySecretAPI(addr=addr)
         self.levels = [ 0.0 ] * 50
         self.mode = mode
         self.gradient = gradient.json(gradients[self.mode])
+        self.ngrad = len(self.gradient)
     
         if self.mode == 'levels':
             self.f_col = self.f_col_levels
@@ -20,13 +20,13 @@ class HolidaySpectrum:
             self.f_col = self.f_col_spectrum
 
     def f_col_levels(self, i, level):
-        k = int(level * 0.2 * self.GRAD)
-        if k > self.GRAD - 1:
-            k = self.GRAD - 1
+        k = int(level * self.ngrad)
+        if k > self.ngrad - 1:
+            k = self.ngrad - 1
         return self.gradient[k]
 
     def f_col_spectrum(self, i, level):
-        k = level * 0.2;
+        k = level;
         if k > 1.0:
             k = 1.0
         ( r, g, b ) = self.gradient[i]
@@ -46,11 +46,7 @@ class HolidaySpectrum:
     def render(self, spectrum):
         """Render a frequency spectrum on the Holiday lights"""
         for i in range(50):
-            if i < 25:
-                j = i + 25
-            else:
-                j = i - 25
-            l = self.decay(i, spectrum[j])
+            l = self.decay(i, spectrum[i])
             ( r, g, b ) = self.f_col(i, l) 
             self.holiday.setglobe(i, r, g, b)
         self.holiday.render() 
