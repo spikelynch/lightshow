@@ -13,22 +13,26 @@ This package includes two renderers:
 
 ## How to run it
 
-./lightshow.py -i INPUT -l LIGHTS -m MODE -d DECAY -s SCALE -a
+./lightshow.py -i INPUT -l LIGHTS -m MODE -g GRADIENTS -d DECAY -s SCALE -a
 
 INPUT is the index number of the input channel. I use a USB audio
 adaptor on my Pi which shows up as index # 2, but it may not be the
-same on whatever device you use. I've included a little script called
+same on whatever device you use. I've included a script called
 devices.py which scans all the audio devices with PyAudio and dumps
 them out with their index numbers to help find it
 
 LIGHTS is the  IP address of your Holiday lights
 
-MODE is the visualisation mode, either 'levels' or 'spectrum'. In
-either mode, each light is assigned one of 50 frequency bins. For
-'level' mode, the level of each frequency is mapped to a colour on the
-colour gradient. In 'spectrum' mode, each light has a colour mapped
-from its frequency, and the levels are used to control the light's
-value (from dark to 100% bright). I think 'levels' is better.
+MODE is the visualisation mode, either 'levels' or 'spectrum'. In both
+modes, each light represents a frequency in either the left or right
+channel. In 'spectrum' mode a light's colour depends on its frequency
+and the brightness varies with the level of that frequency. In
+'levels' mode, both the brightness and the colour of each light vary
+with its level. I like 'levels' better.
+
+GRADIENTS is an optional flag which lets you set a JSON file
+controlling the colour gradients. There's a default provided,
+gradients.json, which you can have a look at if you want to customise it.
 
 DECAY lets you smooth out the visualisation by making lights decay
 exponentially from a peak value, instead of just going dark. It's a
@@ -43,7 +47,7 @@ quiet stuff and can't see anything.
 
 The -a flag sends an ASCII-art visualisation of the spectrum to the
 command line: it's useful for debugging if you haven't got the lights
-working yet.
+working yet.  It looks like this:
 
                       .  ...+-+...  .                 
                   .      .-.: :.-.      .             
@@ -83,10 +87,10 @@ yet.
 
 # To Do
 
-More options for stereo
+Better error handling: sometimes it freezes because the visualiser
+can't keep up with the audio input
 
-Keep a rolling average and adjust the scaling to the level of the
-input signals
+Automatic scaling to the input signals
 
 Detect pauses between songs - could switch between gradients here
 
