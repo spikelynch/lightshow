@@ -12,6 +12,8 @@ class HolidaySpectrum:
         self.levels = [ 0.0 ] * 50
         self.mode = mode
         self.gradient = gradient.json(gradients[self.mode])
+        if self.mode == 'spectrum':
+            self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
     
         if self.mode == 'levels':

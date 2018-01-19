@@ -17,7 +17,7 @@ class SpectrumAnalyser:
     CHUNK = 2048 
     START = 0
     DEFAULT_BINS = 100
-    DEFAULT_USE = 50
+    DEFAULT_USE = 25 
     EXPECT_MAX = 3.0 
     data = []
     spectrum = []
@@ -28,7 +28,6 @@ class SpectrumAnalyser:
         if not device:
             self.device = self.DEVICE
         self.nfreq = nfreq
-        self.slice = self.nfreq // 2
         self.nbins = nbins
         self.max = 0
         self.scale = 1.0 / scale
@@ -64,16 +63,15 @@ class SpectrumAnalyser:
         interleaved = self.data[self.START:self.START + self.nbins * 2]
         stereo = np.reshape(interleaved, (self.nbins, 2))
   
-        left = np.fft.fft(stereo[:,0])
-        right = np.fft.fft(stereo[:,1])    
-        lspec = [ np.sqrt(c.real ** 2 + c.imag ** 2) for c in right ]
-        rspec = [ np.sqrt(c.real ** 2 + c.imag ** 2) for c in left ]
-        self.spectrum = [ self.scale * 0.5 * (l + r) for (l, r) in zip(lspec, rspec) ] 
-        # shift so 0 is in the middle and throw away high frequencies
-        s0 = self.spectrum[:self.slice]
-        s1 = self.spectrum[-self.slice:]
-        # s1.reverse()
-	self.spectrum = s1 + s0
+        left = np.fft.fft(stereo[:,1])
+        right = np.fft.fft(stereo[:,0])
+        
+        left = left[:self.nfreq]
+        right = right[:self.nfreq]    
+        lspec = [ np.sqrt(c.real ** 2 + c.imag ** 2) for c in left ]
+        rspec = [ np.sqrt(c.real ** 2 + c.imag ** 2) for c in right ]
+        lspec.reverse()
+        self.spectrum = [ self.scale * v for v in lspec + rspec ]
         m = max(self.spectrum)
         if m > self.max:
             self.max = m
