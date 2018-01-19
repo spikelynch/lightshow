@@ -60,4 +60,9 @@ Right now it just takes input from one stereo channel. It should take
 both, and give you the option of taking the average or visualising
 both channels.
 
+Keep a rolling average and adjust the scaling to the level of the
+input signals
+
 Detect pauses between songs and switch in new gradients.
+
+Throw away some of the higher frequencies
