@@ -23,12 +23,17 @@ them out with their index numbers to help find it
 
 LIGHTS is the  IP address of your Holiday lights
 
-MODE is the visualisation mode, either 'levels' or 'spectrum'. In both
-modes, each light represents a frequency in either the left or right
-channel. In 'spectrum' mode a light's colour depends on its frequency
+MODE is the visualisation mode, either 'levels', 'spectrum' or 'wave'.
+
+In the first two modes, each light represents a frequency level. 
+In 'spectrum' mode a light's colour depends on its frequency
 and the brightness varies with the level of that frequency. In
 'levels' mode, both the brightness and the colour of each light vary
-with its level. I like 'levels' better.
+with its level. Both of these modes map the left channel on one side of
+the lights and the right channel on the other, mirrored down the middle.
+
+In 'wave' mode, there's no frequency analysis, the audio signal is used
+as the basis for a chaser display.
 
 GRADIENTS is an optional flag which lets you set a JSON file
 controlling the colour gradients. There's a default provided,
