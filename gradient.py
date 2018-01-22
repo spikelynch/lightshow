@@ -15,6 +15,7 @@ def toholiday(f):
     return int(63 * f)
 
 def holidayrgb(h, s, v):
+    print("*** hsv {} {} {}".format(h, s, v))
     ( r0, g0, b0 ) = colorsys.hsv_to_rgb(h, s, v)
     return ( toholiday(r0), toholiday(g0), toholiday(b0) ) 
 

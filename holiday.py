@@ -1,5 +1,7 @@
 import gradient
 from holidaysecretapi import HolidaySecretAPI
+import sys
+
 
 # a renderer needs to have a method 'render' which accepts a single
 # list of values as an argument
@@ -15,7 +17,8 @@ class HolidaySpectrum:
         if self.mode == 'spectrum':
             self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
-
+        print(self.gradient)
+        #self.demo()
         if self.mode == 'wave':
             self.render = self.render_wave
         else:
@@ -60,8 +63,10 @@ class HolidaySpectrum:
     def render_wave(self, analyzer):
         """Render the raw waveform"""
         for i in range(50):
-            v = int(( analyzer.left[i] + analyzer.right[i] ) * 0.5)
-            ( r, g, b ) = self.gradient[j] 
+            v = int(self.ngrad * abs( analyzer.left[i] + analyzer.right[i] ))
+            if v > self.ngrad - 1:
+                v = self.ngrad - 1
+            ( r, g, b ) = self.gradient[v] 
             self.holiday.setglobe(i, r, g, b)
         self.holiday.render() 
 
@@ -70,4 +75,5 @@ class HolidaySpectrum:
             ( r, g, b ) = self.gradient[i]
             self.holiday.setglobe(i, r, g, b)
         self.holiday.render() 
+        sys.exit(-1)
 
