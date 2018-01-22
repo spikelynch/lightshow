@@ -15,11 +15,15 @@ class HolidaySpectrum:
         if self.mode == 'spectrum':
             self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
-    
-        if self.mode == 'levels':
-            self.f_col = self.f_col_levels
+
+        if self.mode == 'wave':
+            self.render = self.render_wave
         else:
-            self.f_col = self.f_col_spectrum
+            self.render = self.render_spectrum
+            if self.mode == 'levels':
+                self.f_col = self.f_col_levels
+            else:
+                self.f_col = self.f_col_spectrum
 
     def f_col_levels(self, i, level):
         k = int(level * self.ngrad)
@@ -45,11 +49,19 @@ class HolidaySpectrum:
                 self.levels[i] = dl
             return self.levels[i]	
         
-    def render(self, spectrum):
-        """Render a frequency spectrum on the Holiday lights"""
+    def render_spectrum(self, analyzer):
+        """Render a frequency spectrum"""
         for i in range(50):
-            l = self.decay(i, spectrum[i])
+            l = self.decay(i, analyzer.spectrum[i])
             ( r, g, b ) = self.f_col(i, l) 
+            self.holiday.setglobe(i, r, g, b)
+        self.holiday.render() 
+
+    def render_wave(self, analyzer):
+        """Render the raw waveform"""
+        for i in range(50):
+            v = int(( analyzer.left[i] + analyzer.right[i] ) * 0.5
+            ( r, g, b ) = self.gradient[j] 
             self.holiday.setglobe(i, r, g, b)
         self.holiday.render() 
 

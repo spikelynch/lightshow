@@ -44,10 +44,10 @@ class SpectrumAnalyser:
         print("Listening on device {}".format(self.device))
         try:
             while True:
-                self.data = self.audioinput()
+                self.audio = self.audioinput()
                 self.fft()
                 for r in renderers:
-                    r.render(self.spectrum)
+                    r.render(self)
         except KeyboardInterrupt:
             self.stream.close()
             self.pa.terminate()
@@ -60,11 +60,13 @@ class SpectrumAnalyser:
         return ret
 
     def fft(self):
-        interleaved = self.data[self.START:self.START + self.nbins * 2]
+        interleaved = self.audio[self.START:self.START + self.nbins * 2]
         stereo = np.reshape(interleaved, (self.nbins, 2))
+        self.left = stereo[:,1]
+        self.right = stereo[:,0]
   
-        left = np.fft.fft(stereo[:,1])
-        right = np.fft.fft(stereo[:,0])
+        left = np.fft.fft(self.left)
+        right = np.fft.fft(self.right)
         
         left = left[:self.nfreq]
         right = right[:self.nfreq]    

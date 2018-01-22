@@ -22,5 +22,5 @@ of ASCII
             k = 9
         return self.ASCII[k]
 
-    def render(self, spectrum):
-        print(''.join([ self.ascify(l) for l in spectrum ]))
+    def render(self, spec):
+        print(''.join([ self.ascify(l) for l in spec.spectrum ]))
