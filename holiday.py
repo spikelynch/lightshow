@@ -17,8 +17,6 @@ class HolidaySpectrum:
         if self.mode == 'spectrum':
             self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
-        print(self.gradient)
-        #self.demo()
         if self.mode == 'wave':
             self.render = self.render_wave
         else:
