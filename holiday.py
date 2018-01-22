@@ -60,7 +60,7 @@ class HolidaySpectrum:
     def render_wave(self, analyzer):
         """Render the raw waveform"""
         for i in range(50):
-            v = int(( analyzer.left[i] + analyzer.right[i] ) * 0.5
+            v = int(( analyzer.left[i] + analyzer.right[i] ) * 0.5)
             ( r, g, b ) = self.gradient[j] 
             self.holiday.setglobe(i, r, g, b)
         self.holiday.render() 
