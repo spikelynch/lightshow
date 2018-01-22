@@ -10,8 +10,12 @@ class HolidaySpectrum:
 
     def __init__(self, addr, mode, gradients, decay):
         self.DECAY = decay
+        self.WAVELET = 10 
+        self.WAVEMULT = 100 // self.WAVELET
+        print("{} {}".format(self.WAVELET, self.WAVEMULT))
         self.holiday = HolidaySecretAPI(addr=addr)
         self.levels = [ 0.0 ] * 50
+        self.buffer = [ ( 0, 0, 0 ) ] * 50
         self.mode = mode
         self.gradient = gradient.json(gradients[self.mode])
         if self.mode == 'spectrum':
@@ -60,12 +64,15 @@ class HolidaySpectrum:
 
     def render_wave(self, analyzer):
         """Render the raw waveform"""
-        for i in range(50):
-            v = int(self.ngrad * abs( analyzer.left[i] + analyzer.right[i] ))
+        self.buffer = self.buffer[self.WAVELET:]
+        for i in range(self.WAVELET):
+            v = int(self.ngrad * abs( analyzer.left[self.WAVEMULT * i] + analyzer.right[self.WAVEMULT * i] ))
             if v > self.ngrad - 1:
                 v = self.ngrad - 1
-            ( r, g, b ) = self.gradient[v] 
-            self.holiday.setglobe(i, r, g, b)
+            ( r, g, b ) = self.gradient[v]
+            self.buffer.append(( r, g, b ))
+        for i in range(50):
+            self.holiday.setglobe(i, *self.buffer[i])
         self.holiday.render() 
 
     def demo(self):
