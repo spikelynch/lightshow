@@ -40,12 +40,15 @@ class HolidaySpectrum:
     def makemap(self, map):
         m = []       
         for s in map:
-            a = s[0]
-            b = s[1]
-            if a < b:
-                m += range(a, b + 1)
+            if type(s) == list:
+                a = s[0]
+                b = s[1]
+                if a < b:
+                    m += range(a, b + 1)
+                else:
+                    m += range(a, b - 1, -1)
             else:
-                m += range(a, b - 1, -1)
+                m.append(s)
         complete = True
         if len(m) != 50:
             print("Map has wrong number of elements: {}".format(len(m)))
@@ -109,8 +112,8 @@ class HolidaySpectrum:
     def setglobe(self, i, r, g, b):
         self.holiday.setglobe(self.map[i], r, g, b)
         
-    def demo(self):
-        for i in range(50):
+    def demo(self, r):
+        for i in r:
             ( r, g, b ) = self.gradient[i]
             self.setglobe(i, r, g, b)
         self.holiday.render() 

@@ -41,7 +41,7 @@ if args.lights:
         config = json.load(gf)
         hs = HolidaySpectrum(args.lights, config)
         if args.demo:
-            hs.demo()
+            hs.demo(range(50))
             sys.exit(-1)
         else:
             renderers.append(hs)
