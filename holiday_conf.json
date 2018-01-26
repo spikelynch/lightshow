@@ -1,4 +1,6 @@
 {
+    "decay": 0,
+    "mode": "spectrum",
     "maps" : {
         "invert": [ ( 24, 0 ), ( 25, 50 ) ],
         "rectangle": [

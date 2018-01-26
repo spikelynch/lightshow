@@ -8,8 +8,8 @@ import sys
 
 class HolidaySpectrum:
 
-    def __init__(self, addr, mode, gradients, decay):
-        self.DECAY = decay
+    def __init__(self, addr, config):
+        self.DECAY = config['decay']
         self.WAVELET = 10 
         self.WAVEMULT = 100 // self.WAVELET
         print("{} {}".format(self.WAVELET, self.WAVEMULT))
@@ -17,10 +17,18 @@ class HolidaySpectrum:
         self.levels = [ 0.0 ] * 50
         self.buffer = [ ( 0, 0, 0 ) ] * 50
         self.mode = mode
+        gradients = config['gradients']
         self.gradient = gradient.json(gradients[self.mode])
         if self.mode == 'spectrum':
             self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
+
+        maps = config['maps']
+        if 'map' not in config:
+            self.map = range(50)
+        else:
+            self.map = maps[config['map']]
+        
         if self.mode == 'wave':
             self.render = self.render_wave
         else:
@@ -53,13 +61,15 @@ class HolidaySpectrum:
 	    else:
                 self.levels[i] = dl
             return self.levels[i]	
+
+
         
     def render_spectrum(self, analyzer):
         """Render a frequency spectrum"""
         for i in range(50):
             l = self.decay(i, analyzer.spectrum[i])
             ( r, g, b ) = self.f_col(i, l) 
-            self.holiday.setglobe(i, r, g, b)
+            self.setglobe(i, r, g, b)
         self.holiday.render() 
 
     def render_wave(self, analyzer):
@@ -72,9 +82,12 @@ class HolidaySpectrum:
             ( r, g, b ) = self.gradient[v]
             self.buffer.append(( r, g, b ))
         for i in range(50):
-            self.holiday.setglobe(i, *self.buffer[i])
+            self.setglobe(i, *self.buffer[i])
         self.holiday.render() 
 
+    def setglobe(i, r, g, b):
+        self.holiday.setglobe[self.map[i], r, g, b)
+        
     def demo(self):
         for i in range(50):
             ( r, g, b ) = self.gradient[i]
