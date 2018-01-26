@@ -42,8 +42,9 @@ if args.lights:
         hs = HolidaySpectrum(args.lights, config)
         if args.demo:
             hs.demo()
+            sys.exit(-1)
         else:
-            renderers.append(HolidaySpectrum(args.lights, hs))
+            renderers.append(hs)
 if args.ascii:
     renderers.append(AsciiSpectrum())
 

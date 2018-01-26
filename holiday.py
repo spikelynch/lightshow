@@ -9,10 +9,9 @@ import sys
 class HolidaySpectrum:
 
     def __init__(self, addr, config):
-        self.DECAY = config['decay']
+        self.DECAY = config['decay'] 
         self.WAVELET = 10 
         self.WAVEMULT = 100 // self.WAVELET
-        print("{} {}".format(self.WAVELET, self.WAVEMULT))
         self.holiday = HolidaySecretAPI(addr=addr)
         self.levels = [ 0.0 ] * 50
         self.buffer = [ ( 0, 0, 0 ) ] * 50
@@ -38,18 +37,18 @@ class HolidaySpectrum:
             else:
                 self.f_col = self.f_col_spectrum
 
-    def makemap(map):
+    def makemap(self, map):
         m = []       
         for s in map:
             a = s[0]
             b = s[1]
             if a < b:
-                m.append(range(a, b + 1))
+                m += range(a, b + 1)
             else:
-                m.append(range(a, b - 1, -1))
+                m += range(a, b - 1, -1)
         complete = True
         if len(m) != 50:
-            print("Selected map doesn't have 50 elements")
+            print("Map has wrong number of elements: {}".format(len(m)))
             complete = False
         for i in range(50):
             if i not in m:
@@ -58,8 +57,7 @@ class HolidaySpectrum:
         if not complete:
             print("Map isn't complete")
             sys.exit(-1)
-        print("Map: {}".format(m))
-        return m
+        self.map = m
 
     def f_col_levels(self, i, level):
         k = int(level * self.ngrad)
