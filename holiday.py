@@ -27,7 +27,7 @@ class HolidaySpectrum:
         if 'map' not in config:
             self.map = range(50)
         else:
-            self.map = maps[config['map']]
+            self.makemap(maps[config['map']])
         
         if self.mode == 'wave':
             self.render = self.render_wave
@@ -37,6 +37,27 @@ class HolidaySpectrum:
                 self.f_col = self.f_col_levels
             else:
                 self.f_col = self.f_col_spectrum
+
+    def makemap(map):
+        m = []       
+        for a, b in map:
+            if a < b:
+                m.append(range(a, b + 1))
+            else:
+                m.append(range(a, b - 1, -1))
+        complete = True
+        if len(m) != 50:
+            print("Selected map doesn't have 50 elements")
+            complete = False
+        for i in range(50):
+            if i not in m:
+                print("Globe {} not found in map".format(i))
+                complete = False
+        if not complete:
+            print("Map isn't complete")
+            sys.exit(-1)
+        print("Map: {}".format(m))
+        return m
 
     def f_col_levels(self, i, level):
         k = int(level * self.ngrad)
@@ -86,12 +107,12 @@ class HolidaySpectrum:
         self.holiday.render() 
 
     def setglobe(i, r, g, b):
-        self.holiday.setglobe[self.map[i], r, g, b)
+        self.holiday.setglobe(self.map[i], r, g, b)
         
     def demo(self):
         for i in range(50):
             ( r, g, b ) = self.gradient[i]
-            self.holiday.setglobe(i, r, g, b)
+            self.setglobe(i, r, g, b)
         self.holiday.render() 
         sys.exit(-1)
 
