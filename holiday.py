@@ -16,7 +16,7 @@ class HolidaySpectrum:
         self.holiday = HolidaySecretAPI(addr=addr)
         self.levels = [ 0.0 ] * 50
         self.buffer = [ ( 0, 0, 0 ) ] * 50
-        self.mode = mode
+        self.mode = config['mode']
         gradients = config['gradients']
         self.gradient = gradient.json(gradients[self.mode])
         if self.mode == 'spectrum':
@@ -40,7 +40,9 @@ class HolidaySpectrum:
 
     def makemap(map):
         m = []       
-        for a, b in map:
+        for s in map:
+            a = s[0]
+            b = s[1]
             if a < b:
                 m.append(range(a, b + 1))
             else:
@@ -106,7 +108,7 @@ class HolidaySpectrum:
             self.setglobe(i, *self.buffer[i])
         self.holiday.render() 
 
-    def setglobe(i, r, g, b):
+    def setglobe(self, i, r, g, b):
         self.holiday.setglobe(self.map[i], r, g, b)
         
     def demo(self):
