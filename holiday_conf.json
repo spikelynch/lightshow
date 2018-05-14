@@ -1,6 +1,6 @@
 {
-    "decay": 0,
-    "mode": "spectrum",
+    "decay": 0.1,
+    "mode": "wave",
     "map": "ikea2",
     "maps" : {
         "invert": [ [ 24, 0 ], [ 49, 25 ] ],
