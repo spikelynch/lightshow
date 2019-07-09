@@ -110,6 +110,24 @@ the Raspbian packages python-pyaudio and python-numpy. I've put a
 setup.py in this repo with the dependencies, but haven't tested it
 yet.
 
+## Maps
+
+The config file has a 'maps' section which lets you remap the frequency
+visualisation to whichever physical lights you want. The default layout 
+is called 'ikea2' because it looks good in the paper Ikea floor lamp I
+bought for my loungeroom - I'm putting this here  so that I don't have to
+puzzle out how to string the lights in it.
+
+String the lights in a pattern
+
+    4 - 7 - 7 - 7 - 7 - 7 - 7 - 7 - 4
+
+ie the first four lights, then over the bar at the top, then a loop of seven
+down and back up to the bar and over, then another loop of seven, and so on.
+
+This maps things so that quiet sounds light up at the bottom of the lamp and
+get further up the louder they get.
+
 # To Do
 
 Better error handling: sometimes it freezes because the visualiser
@@ -118,4 +136,5 @@ can't keep up with the audio input
 Automatic scaling to the input signals
 
 Detect pauses between songs - could switch between gradients here
+
 
