@@ -16,11 +16,11 @@ class HolidaySpectrum:
         self.levels = [ 0.0 ] * 50
         self.buffer = [ ( 0, 0, 0 ) ] * 50
         self.mode = config['mode']
-        self.gradient = gradient.json(config['gradients'][config['gradient']])
-        if self.mode == 'spectrum':
-            if len(self.gradient) != 25:
-                print("Colour gradient for spectrum mode must have 25 values")
-                sys.exit(-1)
+        graddef = config['gradients'][config['gradient']]
+        if self.mode == 'levels':
+            self.gradient = gradient.makeGradient(50, graddef)
+        elif self.mode == 'spectrum':
+            self.gradient = gradient.makeGradient(25, graddef)
             self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
 
