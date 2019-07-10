@@ -31,7 +31,7 @@ def hsvgrad(n, c1, c2):
     """
 
     hl = lerpl(c1[0], c2[0], n - 1)
-    sl = lerpl(c1[1], c2[0], n - 1)
+    sl = lerpl(c1[1], c2[1], n - 1)
     vl = lerpl(c1[2], c2[2], n - 1)
     return [ holidayrgb(hl(i), sl(i), vl(i)) for i in range(0, n) ]
     
