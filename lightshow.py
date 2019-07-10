@@ -27,6 +27,8 @@ parser.add_argument("-i", "--input", type=int, help="Audio input device")
 parser.add_argument("-s", "--scale", type=float, default=2.0, help="Scale input")
 parser.add_argument("-l", "--lights",  type=str, default=None, help="IP of Holiday lights")
 parser.add_argument('-c', '--config', type=str, default='holiday_conf.json', help="Holiday config settings")
+parser.add_argument("-m", "--mode",  type=str, default=None, help="Mode (levels/spectrum/wave)")
+parser.add_argument("-g", "--gradient",  type=str, default=None, help="Colour gradient")
 parser.add_argument("-d", "--demo", action="store_true", default=False, help="Demo mode: render the gradient with the map")
 parser.add_argument("-a", "--ascii", action="store_true", default=False, help="Send ASCII spectrum visualisation to stdout")
                         
@@ -39,6 +41,10 @@ renderers = []
 if args.lights:
     with open(args.config) as gf:
         config = json.load(gf)
+        if args.mode:
+            config['mode'] = args.mode
+        if args.gradient:
+            config['gradient'] = args.gradient
         hs = HolidaySpectrum(args.lights, config)
         if args.demo:
             hs.demo(range(50))
