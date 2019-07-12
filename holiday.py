@@ -18,9 +18,9 @@ class HolidaySpectrum:
         self.mode = config['mode']
         graddef = config['gradients'][config['gradient']]
         if self.mode == 'levels':
-            self.gradient = gradient.makeGradient(50, graddef)
+            self.gradient = gradient.makeGradient('holiday', 50, graddef)
         elif self.mode == 'spectrum':
-            self.gradient = gradient.makeGradient(25, graddef)
+            self.gradient = gradient.makeGradient('holiday', 25, graddef)
             self.gradient = self.gradient[::-1] + self.gradient
         self.ngrad = len(self.gradient)
 

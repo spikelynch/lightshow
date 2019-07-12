@@ -137,4 +137,5 @@ Automatic scaling to the input signals
 
 Detect pauses between songs - could switch between gradients here
 
-
+ANSI preview of light gradients
+ANSI mode colour text visualiser

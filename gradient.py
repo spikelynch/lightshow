@@ -11,19 +11,29 @@ __license__ = 'MIT'
 
 import argparse, json, random, colorsys
 
+from color_ansi_rgb import ColorANSIRGB
+
+
 
 def toholiday(f):
     return int(63 * f)
 
 def holidayrgb(h, s, v):
     ( r0, g0, b0 ) = colorsys.hsv_to_rgb(h, s, v)
-    return ( toholiday(r0), toholiday(g0), toholiday(b0) ) 
+    return ( toholiday(r0), toholiday(g0), toholiday(b0) )
+
+def hexint(f):
+    return "{:02X}".format(int(f * 255))
+
+def hexrgb(h, s, v):
+    ( r0, g0, b0 ) = colorsys.hsv_to_rgb(h, s, v)
+    return "#" + hexint(r0) + hexint(g0) + hexint(b0)
 
 def lerpl(x1, x2, m):
     """Linear interpolation between x1 and x2 where 0 <= k <= m"""
     return lambda k: x1 + (x2 - x1) * (1.0 * k / m)
 
-def hsvgrad(n, c1, c2):
+def hsvgrad(targetfn, n, c1, c2):
     """Return an array of n RGB tuples, interpolated between the
     two HSV endpoints
 
@@ -33,7 +43,7 @@ def hsvgrad(n, c1, c2):
     hl = lerpl(c1[0], c2[0], n - 1)
     sl = lerpl(c1[1], c2[0], n - 1)
     vl = lerpl(c1[2], c2[2], n - 1)
-    return [ holidayrgb(hl(i), sl(i), vl(i)) for i in range(0, n) ]
+    return [ targetfn(hl(i), sl(i), vl(i)) for i in range(0, n) ]
     
 
 def json_old(json):
@@ -52,29 +62,22 @@ def json_old(json):
         start = end
     return grad
 
-def makeGradient(n, grads):
+def makeGradient(target, n, grads):
     """
-Given a set of HSV values or presets and a required number of colours, returns an array of
-holiday light colours.
-
-for eg
-
-{
-    "n": 50,
-    "colours": [ "red", "green", "blue" ]
-}
-
-{
-    "n": 25,
-    "colours": [ [ 0, 1, 1 ], [ 0.33, 1, 1], [0.66, 1, 1] ]
-}
+target - 'holiday' or 'ansi'
+n - number of colours in output
+grads - an array of [ h, s, v ] colors
 """
     ngrads = len(grads) - 1
     gradls = partition(n, ngrads)
     grad = []
     start = None
+    if target == 'holiday':
+        targetfn = holidayrgb
+    else:
+        targetfn = hexrgb
     for i in range(ngrads):
-        grad += hsvgrad(gradls[i], grads[i], grads[i + 1])
+        grad += hsvgrad(targetfn, gradls[i], grads[i], grads[i + 1])
     return grad
 
 def partition(m, n):
@@ -90,6 +93,10 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--colours", type=str, help="JSON list of hsv triples")
     args = parser.parse_args()
     if args.length and args.colours:
-        print(makeGradient(args.length, json.loads(args.colours)))
+        ansi = ColorANSIRGB()
+        gradient = makeGradient('ansi', args.length, json.loads(args.colours))
+        output = "".join([ ansi.rgb(c) + "██" for c in gradient ])
+        print(output)
+        print(ansi.reset())
     else:
-        print("gradient.py -l LENGTH c COLOURS")
+        print("gradient.py -l LENGTH -c JSON_COLOURS")
