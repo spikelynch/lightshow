@@ -25,6 +25,7 @@ class ColorANSIRGB:
         self.color_cube = self.color_cube_matrix()
         self.string_color_cube = self.string_color_cube_matrix()
         self.ansi_256 = self.ansi_256_dict()
+        #print(self.ansi_256)
 
     def strip_hash(self, rgb_string):
         return rgb_string.lstrip(self.hex_hash) if rgb_string.startswith(self.hex_hash) else rgb_string
@@ -73,7 +74,10 @@ class ColorANSIRGB:
         return ansi_216_colors
 
     def ansi_256_dict(self):
-        return {**self.ansi_16_dict(), **self.ansi_216_dict()}
+        m = self.ansi_16_dict().copy()
+        m.update(self.ansi_216_dict())
+        return m
+        #return {**self.ansi_16_dict(), **self.ansi_216_dict()}
 
     def closest_rgb(self, rgb_value_string):
         stripped_rgb = re.split(self.strip_regex, self.strip_hash(rgb_value_string))[1:4]
@@ -155,50 +159,50 @@ grey_4 = color.rgb('303030', style='dim')
 reset = color.reset()
 
 
-def demo():
-    print(white + "Using predefined color to print White color text")
-    print(blue_2 + "Using predefined color to print Blue color text")
-    print(color.rgb("#FFFF55", "#000088") + "Using RGB hex values to print Yellow text on blue background" + reset)
-    print(green_2 + "Now let's print the 6x6x6 ANSI color's matrix with ANSI values")
+# def demo():
+#     print(white + "Using predefined color to print White color text")
+#     print(blue_2 + "Using predefined color to print Blue color text")
+#     print(color.rgb("#FFFF55", "#000088") + "Using RGB hex values to print Yellow text on blue background" + reset)
+#     print(green_2 + "Now let's print the 6x6x6 ANSI color's matrix with ANSI values")
 
-    column = 1
-    fg_1, fg_2 = 0, 255
-    basic_16_colors = [c for c in range(1, 17)]
-    gray_shades = [c for c in range(232, 251)]
-    basic = basic_16_colors + gray_shades
-    basic_index = 0
+#     column = 1
+#     fg_1, fg_2 = 0, 255
+#     basic_16_colors = [c for c in range(1, 17)]
+#     gray_shades = [c for c in range(232, 251)]
+#     basic = basic_16_colors + gray_shades
+#     basic_index = 0
 
-    for _ansi_value in range(16, 232):
-        if (column - 1) % 18 == 0:
-            fg_1, fg_2 = fg_2, fg_1
-        print(color.ansi(fg_1, _ansi_value, style='italic') + "%4d " % _ansi_value + reset, end='')
-        if column % 6 == 0:
-            for index in range(5, -2, -1):
-                if index > -1:
-                    fg_color = _ansi_value - index
-                    print(color.ansi(fg_color, style='bold') + "%4d █ " % fg_color + reset, end='')
-                else:
-                    if basic_index < len(basic):
-                        fg_color = basic[basic_index]
-                        print(color.ansi(fg_color, style='underline') + "%4d █" % fg_color + reset, end='')
-                        basic_index += 1
-            print("\n", end='')
-        column += 1
+#     for _ansi_value in range(16, 232):
+#         if (column - 1) % 18 == 0:
+#             fg_1, fg_2 = fg_2, fg_1
+#         print(color.ansi(fg_1, _ansi_value, style='italic') + "%4d " % _ansi_value + reset, end='')
+#         if column % 6 == 0:
+#             for index in range(5, -2, -1):
+#                 if index > -1:
+#                     fg_color = _ansi_value - index
+#                     print(color.ansi(fg_color, style='bold') + "%4d █ " % fg_color + reset, end='')
+#                 else:
+#                     if basic_index < len(basic):
+#                         fg_color = basic[basic_index]
+#                         print(color.ansi(fg_color, style='underline') + "%4d █" % fg_color + reset, end='')
+#                         basic_index += 1
+#             print("\n", end='')
+#         column += 1
 
-    print()
-    print(white + "Usage examples:\n")
-    print('print(color.rgb("#FF3100", "#DDDDDD", style="bold") + "Style and colors =)" + reset)', end=' -> ')
-    print(color.rgb("#FF3100", "#DDDDDD", style="bold") + "Style and colors =)" + reset)
-    print('print(color.rgb("#FF3100", style="bold") + "Style and colors =)" + reset)', end=' -> ')
-    print(color.rgb("#FF3100", style="bold") + "Style and colors =)" + reset)
-    print('print(color.rgb("#3060DD", style="italic") + "Style and colors =)" + reset)', end=' -> ')
-    print(color.rgb("#3060DD", style="italic") + "Style and colors =)" + reset)
-    print('print(color.ansi(250, 237, style="underline") + "Style and colors =)" + reset)', end=' -> ')
-    print(color.ansi(250, 237, style="underline") + "Style and colors =)" + reset)
-    print('print(color.ansi(233, 45) + "Style and colors =)" + reset)', end=' -> ')
-    print(color.ansi(236, 69) + "Style and colors =)" + reset)
-    print('print(color.ansi(233, 45, style="reverse") + "Style and colors =)" + reset)', end=' -> ')
-    print(color.ansi(236, 69, style="reverse") + "Style and colors =)" + reset)
+#     print()
+#     print(white + "Usage examples:\n")
+#     print('print(color.rgb("#FF3100", "#DDDDDD", style="bold") + "Style and colors =)" + reset)', end=' -> ')
+#     print(color.rgb("#FF3100", "#DDDDDD", style="bold") + "Style and colors =)" + reset)
+#     print('print(color.rgb("#FF3100", style="bold") + "Style and colors =)" + reset)', end=' -> ')
+#     print(color.rgb("#FF3100", style="bold") + "Style and colors =)" + reset)
+#     print('print(color.rgb("#3060DD", style="italic") + "Style and colors =)" + reset)', end=' -> ')
+#     print(color.rgb("#3060DD", style="italic") + "Style and colors =)" + reset)
+#     print('print(color.ansi(250, 237, style="underline") + "Style and colors =)" + reset)', end=' -> ')
+#     print(color.ansi(250, 237, style="underline") + "Style and colors =)" + reset)
+#     print('print(color.ansi(233, 45) + "Style and colors =)" + reset)', end=' -> ')
+#     print(color.ansi(236, 69) + "Style and colors =)" + reset)
+#     print('print(color.ansi(233, 45, style="reverse") + "Style and colors =)" + reset)', end=' -> ')
+#     print(color.ansi(236, 69, style="reverse") + "Style and colors =)" + reset)
 
 
 if __name__ == "__main__":

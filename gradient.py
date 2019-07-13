@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 """
 Utility to make HSV lerp gradients and build them from JSON config files
@@ -10,7 +11,6 @@ __license__ = 'MIT'
 
 
 import argparse, json, random, colorsys
-
 from color_ansi_rgb import ColorANSIRGB
 
 
@@ -23,11 +23,15 @@ def holidayrgb(h, s, v):
     return ( toholiday(r0), toholiday(g0), toholiday(b0) )
 
 def hexint(f):
-    return "{:02X}".format(int(f * 255))
+    return "{:02x}".format(int(f * 255))
 
 def hexrgb(h, s, v):
     ( r0, g0, b0 ) = colorsys.hsv_to_rgb(h, s, v)
     return "#" + hexint(r0) + hexint(g0) + hexint(b0)
+
+def rgbtuple(h, s, v):
+    ( r0, g0, b0 ) = colorsys.hsv_to_rgb(h, s, v)
+    return ( int(255 * r0), int(255 * g0), int(255 * b0) )    
 
 def lerpl(x1, x2, m):
     """Linear interpolation between x1 and x2 where 0 <= k <= m"""
@@ -92,10 +96,10 @@ if __name__ == '__main__':
     parser.add_argument("-l", "--length", type=int, help="Length of gradient")
     parser.add_argument("-c", "--colours", type=str, help="JSON list of hsv triples")
     args = parser.parse_args()
+    ansi = ColorANSIRGB()
     if args.length and args.colours:
-        ansi = ColorANSIRGB()
         gradient = makeGradient('ansi', args.length, json.loads(args.colours))
-        output = "".join([ ansi.rgb(c) + "██" for c in gradient ])
+        output = "".join([ ansi.rgb(c) + '█' for c in gradient ])
         print(output)
         print(ansi.reset())
     else:
