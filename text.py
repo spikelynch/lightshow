@@ -9,16 +9,15 @@ or ANSI sequences for colour
 
 
     ASCII = " .:-=+*#%@"
-    ANSI = '█'
     
     def __init__(self, gradient):
         if gradient:
             self.gradient = gradient
             self.ansi = True
-        else
-            self.gradient = ASCII
+        else:
+            self.gradient = self.ASCII
             self.ansi = False
-        self.max = len(self.gradient)
+        self.max = len(self.gradient) - 1
 
     def ascify(self, level):
         if np.isnan(level):
@@ -28,7 +27,7 @@ or ANSI sequences for colour
         if k > self.max:
             k = self.max
         if self.ansi:
-            return self.gradient[k] + ANSI
+            return self.gradient[k]
         else:
             return self.gradient[k]
 

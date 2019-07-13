@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import sys, argparse, json, re
+import gradient
 from spectrum import SpectrumAnalyser
 from holiday import HolidaySpectrum
 from text import TextSpectrum
@@ -53,16 +54,18 @@ else:
 grad = None
 renderer = None
 
-if target == 'holiday' || target == 'ansi':
+ansi = ColorANSIRGB()
+ 
+if target == 'holiday' or target == 'ansi':
     graddef = config['gradients'][config['gradient']]
     if config['mode'] == 'spectrum':
         grad = gradient.makeGradient(target, 25, graddef)
         grad = grad[::-1] + grad
     else:    
         grad = gradient.makeGradient(target, 50, graddef)
-
-
 if args.output == 'ascii' or args.output == 'ansi':
+    if args.output == 'ansi':
+        grad = [ ansi.rgb(c) + '█' for c in grad ]
     renderer = TextSpectrum(grad)
 else:
     renderer = HolidaySpectrum(args.output, config, grad)
@@ -71,8 +74,7 @@ else:
 if args.demo:
     renderer.demo()
     if target == 'ansi':
-        ansi = ColorANSIRGB()
-        print(ansi.reset())
+       print(ansi.reset())
 else:
     # trap keyboard interrupts and reset ANSI
     spec.run([ renderer ])
