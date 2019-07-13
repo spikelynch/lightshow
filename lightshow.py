@@ -46,10 +46,13 @@ with open(args.config) as gf:
     if args.gradient:
         config['gradient'] = args.gradient
 
-if re.compile('^\d\.\d\.\d\.\d$').match(args.output):
+if re.compile('^\d+\.\d+\.\d+\.\d+$').match(args.output):
     target = 'holiday'
 else:
     target = args.output
+    if target != 'ascii' and target != 'ansi':
+        print("Unrecognised output " + args.output)
+        sys.exit(-1)
 
 grad = None
 renderer = None
@@ -63,6 +66,8 @@ if target == 'holiday' or target == 'ansi':
         grad = grad[::-1] + grad
     else:    
         grad = gradient.makeGradient(target, 50, graddef)
+
+
 if args.output == 'ascii' or args.output == 'ansi':
     if args.output == 'ansi':
         grad = [ ansi.rgb(c) + '█' for c in grad ]
