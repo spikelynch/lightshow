@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys, argparse, json
+import sys, argparse, json, re
 from spectrum import SpectrumAnalyser
 from holiday import HolidaySpectrum
-from ascii import AsciiSpectrum
+from text import TextSpectrum
+from color_ansi_rgb import ColorANSIRGB
 
 
 # TODO: make it easier to drop renderers into a directory without having
@@ -25,38 +26,54 @@ NFREQ = 25
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", type=int, help="Audio input device")
 parser.add_argument("-s", "--scale", type=float, default=2.0, help="Scale input")
-parser.add_argument("-l", "--lights",  type=str, default=None, help="IP of Holiday lights")
+parser.add_argument("-o", "--output",  type=str, default='ansi', help="IP of Holiday lights, 'ascii' or 'ansi' for text mode")
 parser.add_argument('-c', '--config', type=str, default='holiday_conf.json', help="Holiday config settings")
 parser.add_argument("-m", "--mode",  type=str, default=None, help="Mode (levels/spectrum/wave)")
 parser.add_argument("-g", "--gradient",  type=str, default=None, help="Colour gradient")
 parser.add_argument("-d", "--demo", action="store_true", default=False, help="Demo mode: render the gradient with the map")
-parser.add_argument("-a", "--ascii", action="store_true", default=False, help="Send ASCII spectrum visualisation to stdout")
                         
 args = parser.parse_args()
 
 spec = SpectrumAnalyser(args.input, args.scale, NBINS, NFREQ)
 
-renderers = []
+config = None
 
-if args.lights:
-    with open(args.config) as gf:
-        config = json.load(gf)
-        if args.mode:
-            config['mode'] = args.mode
-        if args.gradient:
-            config['gradient'] = args.gradient
-        hs = HolidaySpectrum(args.lights, config)
-        if args.demo:
-            hs.demo(range(50))
-            sys.exit(-1)
-        else:
-            renderers.append(hs)
-if args.ascii:
-    renderers.append(AsciiSpectrum())
+with open(args.config) as gf:
+    config = json.load(gf)
+    if args.mode:
+        config['mode'] = args.mode
+    if args.gradient:
+        config['gradient'] = args.gradient
 
-if not renderers:
-    print("You need to select at least one of --lights / --ascii")
-    sys.exit(-1)
-    
-spec.run(renderers)
+if re.compile('^\d\.\d\.\d\.\d$').match(args.output):
+    target = 'holiday'
+else:
+    target = args.output
+
+grad = None
+renderer = None
+
+if target == 'holiday' || target == 'ansi':
+    graddef = config['gradients'][config['gradient']]
+    if config['mode'] == 'spectrum':
+        grad = gradient.makeGradient(target, 25, graddef)
+        grad = grad[::-1] + grad
+    else:    
+        grad = gradient.makeGradient(target, 50, graddef)
+
+
+if args.output == 'ascii' or args.output == 'ansi':
+    renderer = TextSpectrum(grad)
+else:
+    renderer = HolidaySpectrum(args.output, config, grad)
+
+
+if args.demo:
+    renderer.demo()
+    if target == 'ansi':
+        ansi = ColorANSIRGB()
+        print(ansi.reset())
+else:
+    # trap keyboard interrupts and reset ANSI
+    spec.run([ renderer ])
 

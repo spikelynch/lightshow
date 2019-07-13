@@ -8,7 +8,7 @@ import sys
 
 class HolidaySpectrum:
 
-    def __init__(self, addr, config):
+    def __init__(self, addr, config, grad):
         self.DECAY = config['decay'] 
         self.WAVELET = 10 
         self.WAVEMULT = 100 // self.WAVELET
@@ -16,12 +16,7 @@ class HolidaySpectrum:
         self.levels = [ 0.0 ] * 50
         self.buffer = [ ( 0, 0, 0 ) ] * 50
         self.mode = config['mode']
-        graddef = config['gradients'][config['gradient']]
-        if self.mode == 'levels':
-            self.gradient = gradient.makeGradient('holiday', 50, graddef)
-        elif self.mode == 'spectrum':
-            self.gradient = gradient.makeGradient('holiday', 25, graddef)
-            self.gradient = self.gradient[::-1] + self.gradient
+        self.gradient = grad
         self.ngrad = len(self.gradient)
 
         maps = config['maps']
@@ -114,10 +109,9 @@ class HolidaySpectrum:
     def setglobe(self, i, r, g, b):
         self.holiday.setglobe(self.map[i], r, g, b)
         
-    def demo(self, r):
-        for i in r:
+    def demo(self):
+        for i in range(50):
             ( r, g, b ) = self.gradient[i]
             self.setglobe(i, r, g, b)
         self.holiday.render() 
-        sys.exit(-1)
 
